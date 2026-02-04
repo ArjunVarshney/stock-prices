@@ -7,6 +7,9 @@ const sleep = (milliseconds) => {
    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
+const today = new Date();
+const monthString = today.getMonth() + "-" + today.getFullYear();
+
 function getTotalPercentage(data) {
    if (!data) return 0;
    let total = 0;
@@ -378,11 +381,16 @@ async function getAndUpdateStockData() {
          }
 
          process.stdout.write(++c + ". ");
-         appendDataToFile(company_data, "./data", type, company_code);
+         appendDataToFile(
+            company_data,
+            "./data/" + monthString,
+            type,
+            company_code
+         );
          process.stdout.write(c + ". ");
          appendDataToFile(
             { ...company_data, ...company_candle_stick_data },
-            "./candle-stick-data",
+            "./candle-stick-data/" + monthString,
             type,
             company_code
          );
