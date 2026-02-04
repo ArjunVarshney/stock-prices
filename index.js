@@ -186,6 +186,13 @@ const getStockData = async (type, company_code, search_id) => {
          "?page=0&size=10"
    );
 
+   const growwCompanyId = fundamental_response?.data?.header?.growwCompanyId;
+   const newsData = await axios.get(
+      "https://groww.in/v1/api/groww-news/v2/stocks/news/" +
+         growwCompanyId +
+         "?page=0&size=20"
+   );
+
    function processChartData(data) {
       const price_graph = [];
       data.candles.forEach(([_, price]) => {
@@ -202,6 +209,7 @@ const getStockData = async (type, company_code, search_id) => {
    const chart_data_5Y = chart_response_5Y.data;
    const latest_data = latest_response.data;
    const fundamental_data = fundamental_response.data;
+   const news_data = newsData.data?.results;
    const beginTime = new Date(chart_data_1D.candles[0][0] * 1000);
 
    return {
@@ -230,6 +238,7 @@ const getStockData = async (type, company_code, search_id) => {
       debtToEquity: fundamental_data.stats.debtToEquity,
       ...getShareHoldingPatters(fundamental_data.shareHoldingPattern),
       ...getFinancialStatement(fundamental_data.financialStatement),
+      news: news_data,
    };
 };
 
@@ -376,7 +385,7 @@ async function getAndUpdateStockData() {
             }
             j--;
             k++;
-            await sleep((30 + Math.random() * 30) * 1000);
+            await sleep((3 + Math.random() * 3) * 1000);
             continue;
          }
 
