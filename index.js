@@ -1,5 +1,6 @@
 import axios from "axios";
 import fs from "fs";
+import simpleGit from "simple-git";
 
 let symbols = JSON.parse(fs.readFileSync("./stocks.json"));
 
@@ -8,7 +9,7 @@ const sleep = (milliseconds) => {
 };
 
 const today = new Date();
-const monthString = today.getMonth() + "-" + today.getFullYear();
+const dateString = today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
 
 function getTotalPercentage(data) {
    if (!data) return 0;
@@ -53,9 +54,9 @@ function getFinancialStatement(data) {
    });
 
    return {
-      profit: profit.slice(-5, profit.length),
-      revenue: profit.slice(-5, revenue.length),
-      netWorth: profit.slice(-5, netWorth.length),
+      profit: profit.slice(-5),
+      revenue: revenue.slice(-5),
+      netWorth: netWorth.slice(-5),
    };
 }
 
@@ -357,6 +358,27 @@ async function updateStockList() {
    updateStocksJSON("Once-In-News", popular.in_news);
 }
 
+function removeDuplicateStocks() {
+   let totalRemoved = 0;
+   for (const group of symbols) {
+      const stocks = group.stocks;
+      const seen = new Set();
+      const kept = [];
+      for (const s of stocks) {
+         const key = `${s.exchange_type ?? s.type ?? "NSE"}|${s.company_code}`;
+         if (seen.has(key)) {
+            totalRemoved++;
+            continue;
+         }
+         seen.add(key);
+         kept.push(s);
+      }
+      group.stocks = kept;
+   }
+   fs.writeFileSync("./stocks.json", JSON.stringify(symbols));
+   console.log("Removed", totalRemoved, "duplicate stock entries from stocks.json");
+}
+
 async function getAndUpdateStockData() {
    let c = 0;
    let k = 0;
@@ -380,8 +402,12 @@ async function getAndUpdateStockData() {
             k = 0;
          } catch (err) {
             if (k > 5) {
-               j++;
-               k = -1;
+               stocks.splice(j, 1);
+               fs.writeFileSync("./stocks.json", JSON.stringify(symbols));
+               console.log("Removed from stocks.json (fetch failed after retries): " + company_code);
+               j--;
+               k = 0;
+               continue;
             }
             j--;
             k++;
@@ -392,14 +418,14 @@ async function getAndUpdateStockData() {
          process.stdout.write(++c + ". ");
          appendDataToFile(
             company_data,
-            "./data/" + monthString,
+            "./data/" + dateString,
             type,
             company_code
          );
          process.stdout.write(c + ". ");
          appendDataToFile(
             { ...company_data, ...company_candle_stick_data },
-            "./candle-stick-data/" + monthString,
+            "./candle-stick-data/" + dateString,
             type,
             company_code
          );
@@ -409,14 +435,29 @@ async function getAndUpdateStockData() {
 }
 
 (async () => {
-   await updateStockList();
-   console.log("Updated stock list!");
+   // await updateStockList();
+   // console.log("Updated stock list!");
+   // removeDuplicateStocks();
 
-   let total_number_of_stocks = 0;
-   symbols.forEach(({ stocks }) => (total_number_of_stocks += stocks.length));
-   console.log("Number of stocks to be fetched: ", total_number_of_stocks);
+   // let total_number_of_stocks = 0;
+   // symbols.forEach(({ stocks }) => (total_number_of_stocks += stocks.length));
+   // console.log("Number of stocks to be fetched: ", total_number_of_stocks);
 
-   await getAndUpdateStockData();
+   // await getAndUpdateStockData();
 
-   console.log("Updation finished!");
+   // console.log("Updation finished!");
+
+   await pushToGithub();
 })();
+
+async function pushToGithub() {
+   const git = simpleGit();
+   try {
+      await git.add(".");
+      await git.commit(`data update: ${dateString}`);
+      await git.push("origin", "main");
+      console.log("Pushed to GitHub successfully!");
+   } catch (err) {
+      console.error("Git push failed:", err.message);
+   }
+}
