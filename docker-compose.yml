@@ -1,0 +1,14 @@
+services:
+  scraper:
+    build: .
+    container_name: stock-scraper
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Kolkata
+      - RUN_NOW=${RUN_NOW:-false}
+    volumes:
+      - ./data:/app/data
+      - ./candle-stick-data:/app/candle-stick-data
+      - ./stocks.json:/app/stocks.json
+    restart: unless-stopped

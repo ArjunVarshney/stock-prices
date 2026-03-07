@@ -9,7 +9,8 @@ const sleep = (milliseconds) => {
 };
 
 const today = new Date();
-const dateString = today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
+const dateString =
+   today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
 
 function getTotalPercentage(data) {
    if (!data) return 0;
@@ -29,10 +30,10 @@ function getShareHoldingPatters(data) {
       promoters: getTotalPercentage(latest_patterns.promoters),
       mutualFunds: getTotalPercentage(latest_patterns.mutualFunds),
       otherDomesticInstitutions: getTotalPercentage(
-         latest_patterns.otherDomesticInstitutions
+         latest_patterns.otherDomesticInstitutions,
       ),
       foreignInstitutions: getTotalPercentage(
-         latest_patterns.foreignInstitutions
+         latest_patterns.foreignInstitutions,
       ),
       retailAndOthers: getTotalPercentage(latest_patterns.retailAndOthers),
    };
@@ -66,42 +67,42 @@ const getStockCandleStickData = async (type, company_code) => {
          type +
          "/segment/CASH/" +
          company_code +
-         "/daily?intervalInMinutes=5"
+         "/daily?intervalInMinutes=5",
    );
    const chart_response_1W = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/weekly?intervalInMinutes=30"
+         "/weekly?intervalInMinutes=30",
    );
    const chart_response_1M = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/monthly?intervalInMinutes=120"
+         "/monthly?intervalInMinutes=120",
    );
    const chart_response_1Y = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/1y?intervalInDays=3"
+         "/1y?intervalInDays=3",
    );
    const chart_response_3Y = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/3y?intervalInDays=15"
+         "/3y?intervalInDays=15",
    );
    const chart_response_5Y = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/5y?intervalInDays=25"
+         "/5y?intervalInDays=25",
    );
 
    function processChartData(data) {
@@ -137,61 +138,61 @@ const getStockData = async (type, company_code, search_id) => {
          type +
          "/segment/CASH/" +
          company_code +
-         "/daily?intervalInMinutes=1&minimal=true"
+         "/daily?intervalInMinutes=1&minimal=true",
    );
    const chart_response_1W = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/weekly?intervalInMinutes=5&minimal=true"
+         "/weekly?intervalInMinutes=5&minimal=true",
    );
    const chart_response_1M = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/monthly?intervalInMinutes=30&minimal=true"
+         "/monthly?intervalInMinutes=30&minimal=true",
    );
    const chart_response_1Y = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/1y?intervalInDays=1&minimal=true"
+         "/1y?intervalInDays=1&minimal=true",
    );
    const chart_response_3Y = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/3y?intervalInDays=3&minimal=true"
+         "/3y?intervalInDays=3&minimal=true",
    );
    const chart_response_5Y = await axios.get(
       "https://groww.in/v1/api/charting_service/v2/chart/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/5y?intervalInDays=5&minimal=true"
+         "/5y?intervalInDays=5&minimal=true",
    );
    const latest_response = await axios.get(
       "https://groww.in/v1/api/stocks_data/v1/tr_live_prices/exchange/" +
          type +
          "/segment/CASH/" +
          company_code +
-         "/latest"
+         "/latest",
    );
    const fundamental_response = await axios.get(
       "https://groww.in/v1/api/stocks_data/v1/company/search_id/" +
          search_id +
-         "?page=0&size=10"
+         "?page=0&size=10",
    );
 
    const growwCompanyId = fundamental_response?.data?.header?.growwCompanyId;
    const newsData = await axios.get(
       "https://groww.in/v1/api/groww-news/v2/stocks/news/" +
          growwCompanyId +
-         "?page=0&size=20"
+         "?page=0&size=20",
    );
 
    function processChartData(data) {
@@ -291,10 +292,10 @@ async function updateStockList() {
       } else {
          return {
             most_bought: getCompanyData(
-               data.exploreCompanies["POPULAR_STOCKS_MOST_BOUGHT"]
+               data.exploreCompanies["POPULAR_STOCKS_MOST_BOUGHT"],
             ),
             most_valuable: getCompanyData(
-               data.exploreCompanies["MOST_VALUABLE"]
+               data.exploreCompanies["MOST_VALUABLE"],
             ),
             in_news: getCompanyData(data.exploreCompanies["STOCKS_IN_NEWS"]),
          };
@@ -310,7 +311,7 @@ async function updateStockList() {
             const ids = stockGrp.map((o) => o.company_code);
             const filtered = stockGrp.filter(
                ({ company_code }, index) =>
-                  !ids.includes(company_code, index + 1)
+                  !ids.includes(company_code, index + 1),
             );
             symbols[i].stocks = [...filtered];
             break;
@@ -321,37 +322,37 @@ async function updateStockList() {
 
    const top_gainers_large = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/explore/v2/indices/GIDXNIFTY100/market_trends?discovery_filter_types=TOP_GAINERS&size=10",
-      "TOP_GAINERS"
+      "TOP_GAINERS",
    );
    updateStocksJSON("Once-Top-Gainers-Large", top_gainers_large);
    const top_gainers_mid = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/explore/v2/indices/GIDXNIFMDCP100/market_trends?discovery_filter_types=TOP_GAINERS&size=10",
-      "TOP_GAINERS"
+      "TOP_GAINERS",
    );
    updateStocksJSON("Once-Top-Gainers-Mid", top_gainers_mid);
    const top_gainers_small = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/explore/v2/indices/GIDXNIFSMCP100/market_trends?discovery_filter_types=TOP_GAINERS&size=10",
-      "TOP_GAINERS"
+      "TOP_GAINERS",
    );
    updateStocksJSON("Once-Top-Gainers-Small", top_gainers_small);
    const top_losers_large = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/explore/v2/indices/GIDXNIFTY100/market_trends?discovery_filter_types=TOP_LOSERS&size=10",
-      "TOP_LOSERS"
+      "TOP_LOSERS",
    );
    updateStocksJSON("Once-Top-Losers-Large", top_losers_large);
    const top_losers_mid = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/explore/v2/indices/GIDXNIFMDCP100/market_trends?discovery_filter_types=TOP_LOSERS&size=10",
-      "TOP_LOSERS"
+      "TOP_LOSERS",
    );
    updateStocksJSON("Once-Top-Losers-Mid", top_losers_mid);
    const top_losers_small = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/explore/v2/indices/GIDXNIFSMCP100/market_trends?discovery_filter_types=TOP_LOSERS&size=10",
-      "TOP_LOSERS"
+      "TOP_LOSERS",
    );
    updateStocksJSON("Once-Top-Losers-Small", top_losers_small);
    const popular = await fetchAndProcessStocks(
       "https://groww.in/v1/api/stocks_data/v2/explore/list/top?discoveryFilterTypes=STOCKS_IN_NEWS%2CMOST_VALUABLE%2CPOPULAR_STOCKS_MOST_BOUGHT&page=0&size=10",
-      "POPULAR"
+      "POPULAR",
    );
    updateStocksJSON("Once-Most-Bought", popular.most_valuable);
    updateStocksJSON("Once-Most-Valuable", popular.most_valuable);
@@ -376,7 +377,11 @@ function removeDuplicateStocks() {
       group.stocks = kept;
    }
    fs.writeFileSync("./stocks.json", JSON.stringify(symbols));
-   console.log("Removed", totalRemoved, "duplicate stock entries from stocks.json");
+   console.log(
+      "Removed",
+      totalRemoved,
+      "duplicate stock entries from stocks.json",
+   );
 }
 
 async function getAndUpdateStockData() {
@@ -393,18 +398,21 @@ async function getAndUpdateStockData() {
             company_data = await getStockData(
                exchange_type === undefined ? "NSE" : exchange_type,
                company_code,
-               search_id
+               search_id,
             );
             company_candle_stick_data = await getStockCandleStickData(
                exchange_type === undefined ? "NSE" : exchange_type,
-               company_code
+               company_code,
             );
             k = 0;
          } catch (err) {
             if (k > 5) {
                stocks.splice(j, 1);
                fs.writeFileSync("./stocks.json", JSON.stringify(symbols));
-               console.log("Removed from stocks.json (fetch failed after retries): " + company_code);
+               console.log(
+                  "Removed from stocks.json (fetch failed after retries): " +
+                     company_code,
+               );
                j--;
                k = 0;
                continue;
@@ -420,14 +428,14 @@ async function getAndUpdateStockData() {
             company_data,
             "./data/" + dateString,
             type,
-            company_code
+            company_code,
          );
          process.stdout.write(c + ". ");
          appendDataToFile(
             { ...company_data, ...company_candle_stick_data },
             "./candle-stick-data/" + dateString,
             type,
-            company_code
+            company_code,
          );
          await sleep((1 + Math.random() * 2) * 1000);
       }

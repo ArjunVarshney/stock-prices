@@ -1,0 +1,2 @@
+# Mon-Fri at 3:30 PM IST (timezone set via TZ env var)
+30 15 * * 1-5 cd /app && /usr/local/bin/node index.js >> /var/log/scraper.log 2>&1
