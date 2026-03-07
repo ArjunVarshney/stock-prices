@@ -443,17 +443,17 @@ async function getAndUpdateStockData() {
 }
 
 (async () => {
-   // await updateStockList();
-   // console.log("Updated stock list!");
-   // removeDuplicateStocks();
+   await updateStockList();
+   console.log("Updated stock list!");
+   removeDuplicateStocks();
 
-   // let total_number_of_stocks = 0;
-   // symbols.forEach(({ stocks }) => (total_number_of_stocks += stocks.length));
-   // console.log("Number of stocks to be fetched: ", total_number_of_stocks);
+   let total_number_of_stocks = 0;
+   symbols.forEach(({ stocks }) => (total_number_of_stocks += stocks.length));
+   console.log("Number of stocks to be fetched: ", total_number_of_stocks);
 
-   // await getAndUpdateStockData();
+   await getAndUpdateStockData();
 
-   // console.log("Updation finished!");
+   console.log("Updation finished!");
 
    await pushToGithub();
 })();
